@@ -45,7 +45,7 @@ class Game:
 
     def _load_backgrounds(self) -> list:
         bgs = []
-        for name in ["FUNDO.jpeg", "FUNDO2.jpg", "FUNDO3.jpg"]:
+        for name in ["img/FUNDO.jpeg", "img/FUNDO2.jpg", "img/FUNDO3.jpg"]:
             img = pygame.image.load(name)
             img = pygame.transform.scale(img, (self.SCREEN_SIZE, self.SCREEN_SIZE))
             bgs.append(img)

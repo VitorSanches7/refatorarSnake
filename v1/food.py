@@ -14,4 +14,3 @@ class Food:
     def respawn(self) -> None:
         """Reposiciona a comida em local aleatório."""
         self.position = on_grid_random()
-

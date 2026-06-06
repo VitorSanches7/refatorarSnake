@@ -1,7 +1,6 @@
 """Módulo principal do jogo Snake."""
 import time
 import pygame
-from pygame.locals import QUIT, KEYDOWN, K_w, K_s, K_a, K_d
 
 from snake import Snake, SnakeAI, collision, UP, DOWN, LEFT, RIGHT
 from food import Food
@@ -54,17 +53,17 @@ class Game:
 
     def _handle_input(self) -> None:
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            if event.type == KEYDOWN:
-                if event.key == K_w:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
                     self.snake.set_direction(UP)
-                elif event.key == K_s:
+                elif event.key == pygame.K_s:
                     self.snake.set_direction(DOWN)
-                elif event.key == K_a:
+                elif event.key == pygame.K_a:
                     self.snake.set_direction(LEFT)
-                elif event.key == K_d:
+                elif event.key == pygame.K_d:
                     self.snake.set_direction(RIGHT)
 
     def _update_fase(self) -> None:
@@ -90,21 +89,25 @@ class Game:
 
         self.snake.move()
 
+        # Verifica colisões APÓS o movimento
         if self.snake.hits_wall():
             self.vida = -1
-        if self.snake.hits_itself():
-            self.vida -= 1
-        if self.snake.hits_snake(self.snake_ai.body):
-            self.vida -= 1
+        else:
+            if self.snake.hits_itself():
+                self.vida -= 1
+            if self.snake.hits_snake(self.snake_ai.body):
+                self.vida -= 1
 
         if self.vida < 0:
             self.game_over = True
 
     def _update_ai(self) -> None:
         self.snake_ai.choose_direction(self.food.position)
+        # Verifica colisão com comida ANTES de mover (posição atual da cabeça)
+        ate_food = collision(self.snake_ai.head, self.food.position)
         self.snake_ai.safe_move(self.snake.body)
 
-        if collision(self.snake_ai.head, self.food.position):
+        if ate_food:
             self.food.respawn()
             self.snake_ai.grow()
             if self.fase == 3:
@@ -165,7 +168,7 @@ class Game:
         pygame.time.wait(500)
         while True:
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
 
